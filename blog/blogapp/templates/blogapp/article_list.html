@@ -23,8 +23,8 @@
                     <p class="card-text">{{ instance.content | capfirst | truncatechars:128 }}...
                         <a href="{{ instance.get_absolute_url }}">
                             <b>Read More...</b>
-                        </a></p>
-                    <a href="{{ instance.get_absolute_url }}" class="btn btn-primary">Read More</a>
+                        </a>
+                    </p>
                 </div>
             </div>
         {% endfor %}

@@ -3,7 +3,7 @@
     <div class="container">
         <div class="card m-2">
             <div class="card-header">
-                <h2 class="card-title"><b>{{ object.title | title }}</b></h2>
+                <h1 class="card-title"><b>{{ object.title | title }}</b></h1>
             </div>
             <img src="{{ object.image.url }}" class="card-img-top " alt="{{ object.title }} image">
             <div class="card-body">
@@ -20,15 +20,12 @@
                 <div class="row comments">
                     <div class="comment col-12 rounded">
                         {% for comment in comments %}
-
                             <p class="pull-right">
                                 <a href="{{ edit_url }}"><i class="fas fa-edit"></i></a>
                             </p>
                             <h4><a href="#"><b>{{ comment.added_by.username }}</b>
-                                <small>{{ comment.added_on |timesince }}</small></a></h4>
+                                <small>{{ comment.added_on |timesince }} ago</small></a></h4>
                             <p class=" text-dark">{{ comment.comment }}</p>
-
-
                         {% endfor %}
                     </div>
                 </div>
