@@ -1,7 +1,8 @@
+from django.contrib import messages
+from django.forms import modelformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, FormView
+from django.template import RequestContext
 from django.views.generic import DeleteView
 from django.views.generic import ListView
 from django.views.generic import UpdateView
@@ -9,8 +10,10 @@ from django.views.generic.base import View
 
 from comment.forms import CommentForm
 from comment.models import Comment
-from .forms import ArticleModelForm
+from .forms import ArticleForm
+from .forms import ArticleImageForm
 from .models import Article
+from .models import ArticleImage
 
 
 class ArticleObjectMixin(object):
@@ -21,13 +24,68 @@ class ArticleObjectMixin(object):
         return get_object_or_404(self.model, id=pk)
 
 
-class ArticleCreateView(CreateView):
-    form_class = ArticleModelForm
-    template_name = 'blogapp/article_create.html'
+class ArticleCreateView(View):
 
-    def get_success_url(self):
-        success_url = "/blog/"
-        return success_url
+    def post(self, request):
+
+        ImageFormSet = modelformset_factory(ArticleImage,
+                                            form=ArticleImageForm, extra=3)
+
+        if request.method == 'POST':
+            form = ArticleForm(request.POST, request.FILES)
+            formset = ImageFormSet(request.POST, request.FILES,
+                                   queryset=ArticleImage.objects.none())
+
+            if form.is_valid() and formset.is_valid():
+                post_form = form.save(commit=False)
+                post_form.user = request.user
+                post_form.save()
+
+                for form in formset.cleaned_data:
+                    image = form['image']
+                    photo = ArticleImage(article=post_form, image=image)
+                    photo.save()
+                messages.success(request,
+                                 "Posted!")
+                return HttpResponseRedirect("/")
+            else:
+                print
+                form.errors, formset.errors
+        else:
+            form = ArticleForm()
+            formset = ImageFormSet(queryset=ArticleImage.objects.none())
+        return render(request, 'blogapp/article_create.html',
+                      {'form': form, 'formset': formset})
+
+    def get(self, request):
+
+        ImageFormSet = modelformset_factory(ArticleImage, form=ArticleImageForm, extra=3)
+
+        if request.method == 'POST':
+            form = ArticleForm(request.POST, request.FILES)
+            formset = ImageFormSet(request.POST, request.FILES,
+                                   queryset=ArticleImage.objects.none())
+
+            if form.is_valid() and formset.is_valid():
+                post_form = form.save(commit=False)
+                post_form.user = request.user
+                post_form.save()
+
+                for form in formset.cleaned_data:
+                    image = form['image']
+                    photo = ArticleImage(article=post_form, image=image)
+                    photo.save()
+                messages.success(request,
+                                 "Posted!")
+                return HttpResponseRedirect("/")
+            else:
+                print
+                form.errors, formset.errors
+        else:
+            form = ArticleForm()
+            formset = ImageFormSet(queryset=ArticleImage.objects.none())
+        return render(request, 'blogapp/article_create.html',
+                      {'form': form, 'formset': formset})
 
 
 class ArticleListView(ListView):
@@ -41,7 +99,7 @@ class ArticleDetailView(ArticleObjectMixin, View):
     def get(self, request, *args, **kwargs):
         obj = self.get_object()
         if obj is not None:
-            form = CommentForm(request.POST)
+            form = CommentForm(request.POST or None)
             self.context['form'] = form
             self.context['object'] = obj
             c = Comment.objects.filter(article=obj).order_by('-id')
@@ -53,7 +111,7 @@ class ArticleDetailView(ArticleObjectMixin, View):
     def post(self, request, *args, **kwargs):
         obj = self.get_object()
         if obj is not None:
-            form = CommentForm(request.POST)
+            form = CommentForm(request.POST or None)
             if form.is_valid():
                 s = form.save(commit=False)
                 s.article = obj
@@ -73,7 +131,7 @@ class ArticleDetailView(ArticleObjectMixin, View):
 
 
 class ArticleUpdateView(UpdateView):
-    form_class = ArticleModelForm
+    form_class = ArticleForm
     template_name = 'blogapp/article_create.html'
 
     def get_object(self, queryset=None):

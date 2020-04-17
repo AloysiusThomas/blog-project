@@ -1,26 +1,15 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-
-def article_image_location(instance, filename):
-    try:
-        extension = filename.split(".")[1].lower()
-        extension = "." + extension
-    except Exception as e:
-        print(e, "Handled")
-        extension = ""
-    filename = str(instance.title)
-    filename = filename.replace(" ", "-")
-    filename = filename + extension
-    location = "article/images/"
-    return '%s/%s' % (location, filename)
+from blogapp.utils import article_extra_image_location
+from blogapp.utils import article_image_location
 
 
 class Article(models.Model):
     title = models.CharField(max_length=120)
     content = models.TextField()
     active = models.BooleanField(default=True)
-    image = models.ImageField(upload_to=article_image_location)
+    top_image = models.ImageField(upload_to=article_image_location)
     added = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -29,6 +18,11 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ArticleImage(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, default=None)
+    image = models.ImageField(upload_to=article_extra_image_location)
 
 
 class User(AbstractUser):

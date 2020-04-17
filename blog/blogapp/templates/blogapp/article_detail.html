@@ -5,7 +5,7 @@
             <div class="card-header">
                 <h1 class="card-title"><b>{{ object.title | title }}</b></h1>
             </div>
-            <img src="{{ object.image.url }}" class="card-img-top " alt="{{ object.title }} image">
+            <img src="{{ object.top_image.url }}" class="card-img-top " alt="{{ object.title }} image">
             <div class="card-body">
                 <p class="card-text">{{ object.content }}</p>
             </div>
@@ -16,20 +16,39 @@
                     <button class="btn btn-primary" type="submit">Submit</button>
                 </form>
             </div>
-            <div class="col-md-12 col-sm-12 rounded">
+            <div class="col-md-12 col-sm-12 rounded" id="employee_table">
                 <div class="row comments">
-                    <div class="comment col-12 rounded">
+                    <div class="comment col-12 rounded ">
                         {% for comment in comments %}
                             <p class="pull-right">
                                 <a href="{{ edit_url }}"><i class="fas fa-edit"></i></a>
                             </p>
-                            <h4><a href="#"><b>{{ comment.added_by.username }}</b>
-                                <small>{{ comment.added_on |timesince }} ago</small></a></h4>
+                            <strong><a href="#"><b>{{ comment.added_by.username }}</b>
+                                <small>{{ comment.added_on |timesince }} ago</small></a></strong>
                             <p class=" text-dark">{{ comment.comment }}</p>
+                            <hr>
                         {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    {% block extra-js %}
+        <script>
+            function autoReload() {
+                setTimeout(function () {
+                    $.ajax({
+                        url: '/blogapp/article_detail.html',
+                        success: function (data) {
+                            document.getElementById("employee_table").innerHTML = data;
+                        }
+                    });
+                    autoReload();  // calling again after 5 seconds
+                }, 5000);
+            }
+
+            autoReload();
+        </script>
+
+    {% endblock %}
 {% endblock %}

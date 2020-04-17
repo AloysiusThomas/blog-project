@@ -15,7 +15,7 @@
         {% for instance in object_list %}
             <div class="card m-2">
                 <img style="height: 250px; width: 100%; object-fit: cover;"
-                     src="{{ instance.image.url }}" class="card-img-top" alt="{{ instance.title }} image">
+                     src="{{ instance.top_image.url }}" class="card-img-top" alt="{{ instance.title }} image">
 
                 <div class="card-body">
                     <h5 class="card-title"><b>{{ instance.title | title }}</b></h5>

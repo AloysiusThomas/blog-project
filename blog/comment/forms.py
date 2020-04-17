@@ -8,7 +8,9 @@ class CommentForm(forms.ModelForm):
         widget=forms.Textarea(
             attrs={
                 'style': 'border-color: blue; height: 75px;',
-                'placeholder': 'Comments'
+                'placeholder': 'Comments',
+                'id': 'post-text',
+
             }
         )
     )
