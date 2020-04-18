@@ -48,8 +48,7 @@ class ArticleCreateView(View):
                                  "Posted!")
                 return HttpResponseRedirect("/")
             else:
-                print
-                form.errors, formset.errors
+                print(form.errors, formset.errors)
         else:
             form = ArticleForm()
             formset = ImageFormSet(queryset=ArticleImage.objects.none())
@@ -59,30 +58,8 @@ class ArticleCreateView(View):
     def get(self, request):
 
         ImageFormSet = modelformset_factory(ArticleImage, form=ArticleImageForm, extra=3)
-
-        if request.method == 'POST':
-            form = ArticleForm(request.POST, request.FILES)
-            formset = ImageFormSet(request.POST, request.FILES,
-                                   queryset=ArticleImage.objects.none())
-
-            if form.is_valid() and formset.is_valid():
-                post_form = form.save(commit=False)
-                post_form.user = request.user
-                post_form.save()
-
-                for form in formset.cleaned_data:
-                    image = form['image']
-                    photo = ArticleImage(article=post_form, image=image)
-                    photo.save()
-                messages.success(request,
-                                 "Posted!")
-                return HttpResponseRedirect("/")
-            else:
-                print
-                form.errors, formset.errors
-        else:
-            form = ArticleForm()
-            formset = ImageFormSet(queryset=ArticleImage.objects.none())
+        form = ArticleForm()
+        formset = ImageFormSet(queryset=ArticleImage.objects.none())
         return render(request, 'blogapp/article_create.html',
                       {'form': form, 'formset': formset})
 
@@ -160,4 +137,3 @@ def download_article(request, article_id):
         return HttpResponse("Article Does Not exist")
     response = pdf_view(request, article)
     return response
-

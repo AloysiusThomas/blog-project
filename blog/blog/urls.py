@@ -10,6 +10,7 @@ from blog import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/', include('blogapp.urls')),
+    path('user/', include('accounts.urls')),
     path('', views.index, name='index'),
     path("login/", auth.LoginView.as_view(), name='login'),
     path("logout/", auth.LogoutView.as_view(template_name='registration/logged_out.html'), name='logout'),

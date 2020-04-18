@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blogapp',
+    'accounts',
     'comment'
 ]
 
@@ -84,7 +85,7 @@ WKHTMLTOPDF_CMD_OPTIONS = {
     # 'page-size': 'A4',
 }
 
-AUTH_USER_MODEL = 'blogapp.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
