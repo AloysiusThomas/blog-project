@@ -79,6 +79,11 @@ DATABASES = {
     }
 }
 
+WKHTMLTOPDF_CMD_OPTIONS = {
+    # 'margin': 1,
+    # 'page-size': 'A4',
+}
+
 AUTH_USER_MODEL = 'blogapp.User'
 
 # Password validation

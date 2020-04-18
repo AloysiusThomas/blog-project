@@ -1,8 +1,7 @@
 from django.contrib import messages
 from django.forms import modelformset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
-from django.template import RequestContext
 from django.views.generic import DeleteView
 from django.views.generic import ListView
 from django.views.generic import UpdateView
@@ -103,8 +102,10 @@ class ArticleDetailView(ArticleObjectMixin, View):
             self.context['form'] = form
             self.context['object'] = obj
             c = Comment.objects.filter(article=obj).order_by('-id')
+            carousel = ArticleImage.objects.filter(article=obj)
 
             self.context['comments'] = c
+            self.context['carousel'] = carousel
 
         return render(request, self.template_name, self.context)
 
@@ -149,3 +150,14 @@ class ArticleDeleteView(DeleteView):
     def get_object(self, queryset=None):
         pk = self.kwargs.get("id")
         return get_object_or_404(Article, id=pk)
+
+
+def download_article(request, article_id):
+    from .pdf import pdf_view
+    try:
+        article = Article.objects.get(id=article_id)
+    except Article.DoesNotExist:
+        return HttpResponse("Article Does Not exist")
+    response = pdf_view(request, article)
+    return response
+
