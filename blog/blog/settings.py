@@ -133,6 +133,7 @@ MEDIA_URL = '/media/'
 
 LOGIN_REDIRECT_URL = '/blog/'
 LOGOUT_REDIRECT_URL = 'login'
+LOG_PATH = os.path.join(BASE_DIR, 'logs')
 
 LOGGING = {
     'version': 1,
@@ -141,20 +142,28 @@ LOGGING = {
         'detail': {
             'format': '%{levelname)s %(message)s'
         },
+        'medium': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process:d)s %(thread:d)s %(message)s',
+            'datefmt': "%d/%b/%Y %H:%M:%S",
+        },
     },
 
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'detail'
         },
+        'file': {
+            'class': 'logging.FileHandler',
+            'level': 'DEBUG',
+            'filename': os.path.join(LOG_PATH, 'file.log'),
+            'formatter': 'medium'
+        }
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
-    },
+
     'loggers': {
         'blogapp.views': {
-            'handlers': ['console'],
+            'handlers': ['console', 'file'],
             'level': 'INFO',
             'propagate': True,
         }
