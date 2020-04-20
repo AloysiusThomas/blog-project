@@ -1,3 +1,5 @@
+from logging import getLogger
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import modelformset_factory
@@ -14,6 +16,8 @@ from .forms import ArticleForm
 from .forms import ArticleImageForm
 from .models import Article
 from .models import ArticleImage
+from django.conf import settings
+logger = getLogger('blogapp.views')
 
 
 class ArticleObjectMixin(object):
@@ -21,6 +25,8 @@ class ArticleObjectMixin(object):
 
     def get_object(self, queryset=None):
         pk = self.kwargs.get("id")
+        logger.info(f"article id: {pk}")
+
         return get_object_or_404(self.model, id=pk)
 
 
@@ -43,6 +49,7 @@ class ArticleCreateView(LoginRequiredMixin, View):
                 post_form.user = request.user
                 post_form.added_by = request.user
                 post_form.save()
+                logger.info(f"new article id {post_form.id} created by {request.user}")
 
                 for form in formset.cleaned_data:
                     image = form['image']
@@ -70,6 +77,7 @@ class ArticleCreateView(LoginRequiredMixin, View):
 
 class ArticleListView(ListView):
     queryset = Article.objects.all().order_by('-id')
+    logger.info(f"article listed")
 
 
 class ArticleDetailView(ArticleObjectMixin, View):
@@ -87,6 +95,7 @@ class ArticleDetailView(ArticleObjectMixin, View):
 
             self.context['comments'] = c
             self.context['carousel'] = carousel
+        logger.info(f"article  {obj} viewed")
 
         return render(request, self.template_name, self.context)
 
@@ -97,11 +106,16 @@ class ArticleDetailView(ArticleObjectMixin, View):
             if form.is_valid():
                 s = form.save(commit=False)
                 s.article = obj
+
                 try:
                     s.added_by = request.user
+                    logger.info(f"article {obj} commented by {s.added_by}")
+
                 except Exception as e:
-                    print(e)
+                    logger.info(f"error at comment {e}")
+                    logger.info(f"login called")
                     return redirect('login')
+
                 s.save()
                 return HttpResponseRedirect(f'/blog/{obj.id}')
             c = Comment.objects.filter(article=obj).order_by('-id')

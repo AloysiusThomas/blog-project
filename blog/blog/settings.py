@@ -133,3 +133,30 @@ MEDIA_URL = '/media/'
 
 LOGIN_REDIRECT_URL = '/blog/'
 LOGOUT_REDIRECT_URL = 'login'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'detail': {
+            'format': '%{levelname)s %(message)s'
+        },
+    },
+
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'blogapp.views': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        }
+    }
+}
