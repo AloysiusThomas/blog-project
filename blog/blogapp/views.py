@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import modelformset_factory
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
@@ -23,7 +24,9 @@ class ArticleObjectMixin(object):
         return get_object_or_404(self.model, id=pk)
 
 
-class ArticleCreateView(View):
+class ArticleCreateView(LoginRequiredMixin, View):
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
 
     def post(self, request):
 
@@ -38,6 +41,7 @@ class ArticleCreateView(View):
             if form.is_valid() and formset.is_valid():
                 post_form = form.save(commit=False)
                 post_form.user = request.user
+                post_form.added_by = request.user
                 post_form.save()
 
                 for form in formset.cleaned_data:

@@ -45,7 +45,7 @@
                      src="{{ instance.top_image.url }}" class="card-img-top" alt="{{ instance.title }} image">
 
                 <div class="card-body">
-                    <h5 class="card-title"><b>{{ instance.title | title }}</b></h5>
+                    <h5 class="card-title"><b>{{ instance.title | title }} <small>by <b>{{ instance.added_by }}</b></small></b></h5>
 
                     <p class="card-text">{{ instance.content | capfirst | truncatechars:128 }}...
                         <a href="{{ instance.get_absolute_url }}">

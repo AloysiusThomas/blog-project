@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -10,6 +11,7 @@ class Article(models.Model):
     content = models.TextField()
     active = models.BooleanField(default=True)
     top_image = models.ImageField(upload_to=article_image_location)
+    added_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     added = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
