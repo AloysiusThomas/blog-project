@@ -55,8 +55,7 @@ class ArticleCreateView(LoginRequiredMixin, View):
                     image = form['image']
                     photo = ArticleImage(article=post_form, image=image)
                     photo.save()
-                messages.success(request,
-                                 "Posted!")
+                messages.success(request, "Posted!")
                 return HttpResponseRedirect("/")
             else:
                 print(form.errors, formset.errors)
@@ -111,7 +110,7 @@ class ArticleDetailView(ArticleObjectMixin, View):
                     logger.info("article {} commented by {}".format(obj, s.added_by))
 
                 except Exception as e:
-                    logger.info("error at comment {}".format(e))
+                    logger.warning("{}".format(e))
                     logger.info("login called")
                     return redirect('login')
 

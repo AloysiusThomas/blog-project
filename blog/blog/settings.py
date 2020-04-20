@@ -134,38 +134,66 @@ MEDIA_URL = '/media/'
 LOGIN_REDIRECT_URL = '/blog/'
 LOGOUT_REDIRECT_URL = 'login'
 LOG_PATH = os.path.join(BASE_DIR, 'logs')
+#
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'detail': {
+#             'format': '%{levelname)s %(message)s'
+#         },
+#         'medium': {
+#             'format': '%(levelname)s %(asctime)s %(module)s %(process:d)s %(thread:d)s %(message)s',
+#             'datefmt': "%d/%b/%Y %H:%M:%S",
+#         },
+#     },
+#
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'detail'
+#         },
+#         'file': {
+#             'class': 'logging.handlers.TimedRotatingFileHandler',
+#             'level': 'DEBUG',
+#             'filename': os.path.join(LOG_PATH, 'file.log'),
+#             'formatter': 'medium'
+#         }
+#     },
+#
+#     'loggers': {
+#         'blogapp.views': {
+#             'handlers': ['console', 'file'],
+#             'level': 'INFO',
+#             'propagate': True,
+#         }
+#     }
+# }
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+
     'formatters': {
         'detail': {
-            'format': '%{levelname)s %(message)s'
-        },
-        'medium': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process:d)s %(thread:d)s %(message)s',
-            'datefmt': "%d/%b/%Y %H:%M:%S",
+            'format': '%(levelname)s %(asctime)s  %(message)s'
         },
     },
 
     'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(LOG_PATH, 'file.log'),
             'formatter': 'detail'
         },
-        'file': {
-            'class': 'logging.FileHandler',
-            'level': 'DEBUG',
-            'filename': os.path.join(LOG_PATH, 'file.log'),
-            'formatter': 'medium'
-        }
     },
 
     'loggers': {
         'blogapp.views': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
+            'handlers': ['file'],
+            'level': 'DEBUG',
             'propagate': True,
-        }
-    }
+        },
+    },
 }
