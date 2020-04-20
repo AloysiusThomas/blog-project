@@ -177,8 +177,8 @@ LOGGING = {
     'formatters': {
         'detail': {
             'format': '%(levelname)s %(asctime)s  %(message)s Line: %(lineno)d %(filename)s %(funcName)s',
-            # 'datefmt': "%A %d-%B-%Y %I:%M %p",
-            'datefmt': "%c",
+            'datefmt': "%A %d-%B-%Y %I:%M %p",
+            # 'datefmt': "%c",
 
         },
     },
